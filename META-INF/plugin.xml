@@ -1,0 +1,51 @@
+<idea-plugin version="2">
+  <id>com.zhenyaivansky.vasplugin</id>
+  <name>VAS</name>
+  <version>1.0</version>
+  <vendor email="zhenya.ivansky@gmail.com" url=""></vendor>
+
+  <description><![CDATA[
+      Plugin for support VAS module
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Initial version
+    ]]>
+  </change-notes>
+
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileTypeFactory implementation="com.vasplugin.VASFileTypeFactory"/>
+    <lang.parserDefinition language="VAS" implementationClass="com.vasplugin.VASParserDefinition"/>
+    <lang.syntaxHighlighterFactory key="VAS" implementationClass="com.vasplugin.VASSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="com.vasplugin.VASColorSettingsPage"/>
+    <lang.formatter language="VAS" implementationClass="com.vasplugin.VASFormattingModelBuilder"/>
+    <codeStyleSettingsProvider implementation="com.vasplugin.VASCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="com.vasplugin.VASLanguageCodeStyleSettingsProvider"/>
+    <lang.commenter language="VAS" implementationClass="com.vasplugin.VASCommenter"/>
+    <psi.referenceContributor language="VAS" implementation="com.vasplugin.VASReferenceContributor"/>
+    <lang.findUsagesProvider language="VAS" implementationClass="com.vasplugin.VASFindUsagesProvider"/>
+    <codeInsight.lineMarkerProvider language="VAS" implementationClass="com.vasplugin.VASLineMarkerProvider"/>
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>

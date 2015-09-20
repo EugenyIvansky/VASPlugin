@@ -1,0 +1,35 @@
+{
+  parserClass="com.vasplugin.parser.VASParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="VAS"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.vasplugin.psi"
+  psiImplPackage="com.vasplugin.psi.impl"
+
+  elementTypeHolderClass="com.vasplugin.psi.VASTypes"
+  elementTypeClass="com.vasplugin.psi.VASElementType"
+  tokenTypeClass="com.vasplugin.psi.VASTokenType"
+
+  psiImplUtilClass="com.vasplugin.psi.impl.VASPsiImplUtil"
+}
+
+vasFile ::= item_*
+
+private item_ ::= (entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF)
+
+MACRO_IMPL ::= (MACRO_IMPL_START MACRO_BRACKET_START MACRO_NAME MACRO_PARAMS? MACRO_BRACKET_END values? MACRO_IMPL_END) {mixin="com.vasplugin.psi.impl.VASNamedElementImpl"
+                                                                                                                         implements="com.vasplugin.psi.VASNamedElement" methods=[getName setName getNameIdentifier]}
+MACRO_PARAMS ::= (MACRO_PARAM MACRO_PARAMS?)
+entity ::= (B_ENTITY key_value_pair_list? E_ENTITY){mixin="com.vasplugin.psi.impl.VASNamedElementImpl"
+                                                    implements="com.vasplugin.psi.VASNamedElement" methods=[getName setName getNameIdentifier]}
+key_value_pair_list ::= (key_value_pair SEPARATOR key_value_pair_list) | (key_value_pair)
+key_value_pair ::= (KEY  KV_SEPARATOR (SIMPLE_VALUE|entity)) | (KEY KV_SEPARATOR B_VALUES values? E_VALUES) | (KEY) | (MACROS) {mixin="com.vasplugin.psi.impl.VASContributedReferenceHostImpl"
+                                                                                                                                implements="com.vasplugin.psi.VASContributedReferenceHost"}
+values ::= ((SIMPLE_VALUE|entity|key_value_pair|MACROS) SEPARATOR values) | (SIMPLE_VALUE|entity|key_value_pair|MACROS)
+MACROS ::= (MACRO_CALL MACRO_CALL_PARAMS?) {mixin="com.vasplugin.psi.impl.VASContributedReferenceHostImpl"
+                                            implements="com.vasplugin.psi.VASContributedReferenceHost" methods=[getName]}
+
+SIMPLE_VALUE ::= (VAS_VALUE) {mixin="com.vasplugin.psi.impl.VASContributedReferenceHostImpl"
+                                                             implements="com.vasplugin.psi.VASContributedReferenceHost" methods=[getName]}
