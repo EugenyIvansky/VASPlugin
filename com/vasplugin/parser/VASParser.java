@@ -161,7 +161,7 @@ public class VASParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF
+  // entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF | B_VALUES values? E_VALUES
   static boolean item_(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "item_")) return false;
     boolean r;
@@ -172,8 +172,28 @@ public class VASParser implements PsiParser, LightPsiParser {
     if (!r) r = MACROS(b, l + 1);
     if (!r) r = consumeToken(b, COMMENT);
     if (!r) r = consumeToken(b, CRLF);
+    if (!r) r = item__6(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // B_VALUES values? E_VALUES
+  private static boolean item__6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "item__6")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, B_VALUES);
+    r = r && item__6_1(b, l + 1);
+    r = r && consumeToken(b, E_VALUES);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // values?
+  private static boolean item__6_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "item__6_1")) return false;
+    values(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

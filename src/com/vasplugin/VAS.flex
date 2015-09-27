@@ -31,7 +31,7 @@ MACRO_IMPL_END= [#]end
 MACRO_CALL= [#][[:digit:][:letter:]_']+
 MACRO_CALL_PARAMS= [(].*[)]
 KEY=\"[:letter:]+[[:digit:][:letter:]_]*\"
-VALUE=\"~([^\\]\") | [:digit:]+([,.][:digit:]+)? | '[:letter:]'
+VALUE=\"~([^\\]\") | [:digit:]+([,.][:digit:]+)? | '[:letter:]' | [:letter:]+
 
 %state WAITING_ENTITY
 %state WAITING_KV_PAIR
@@ -60,7 +60,7 @@ VALUE=\"~([^\\]\") | [:digit:]+([,.][:digit:]+)? | '[:letter:]'
 
 <WAITING_VALUE> {B_ENTITY}  { yybegin(WAITING_KV_PAIR); return VASTypes.B_ENTITY; }
 <WAITING_VALUE> {VALUE} { yybegin(END_KEY_VALUE_PAIR); return VASTypes.VAS_VALUE; }
-<WAITING_VALUE> {B_VALUES} { yybegin(WAITING_VALUES); return VASTypes.B_VALUES; }
+<YYINITIAL, WAITING_VALUE> {B_VALUES} { yybegin(WAITING_VALUES); return VASTypes.B_VALUES; }
 
 <WAITING_VALUES> {B_ENTITY}  { yybegin(WAITING_KV_PAIR); return VASTypes.B_ENTITY; }
 <WAITING_VALUES> {KEY} { yybegin(WAITING_KV_SEPARATOR); return VASTypes.KEY; }

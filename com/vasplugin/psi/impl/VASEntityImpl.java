@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.vasplugin.psi.VASTypes.*;
 import com.vasplugin.psi.*;
+import com.intellij.navigation.ItemPresentation;
 
 public class VASEntityImpl extends VASNamedElementImpl implements VASEntity {
 
@@ -37,6 +38,10 @@ public class VASEntityImpl extends VASNamedElementImpl implements VASEntity {
 
   public PsiElement getNameIdentifier() {
     return VASPsiImplUtil.getNameIdentifier(this);
+  }
+
+  public ItemPresentation getPresentation() {
+    return VASPsiImplUtil.getPresentation(this);
   }
 
 }

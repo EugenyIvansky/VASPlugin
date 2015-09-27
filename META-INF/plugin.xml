@@ -34,6 +34,8 @@
     <psi.referenceContributor language="VAS" implementation="com.vasplugin.VASReferenceContributor"/>
     <lang.findUsagesProvider language="VAS" implementationClass="com.vasplugin.VASFindUsagesProvider"/>
     <codeInsight.lineMarkerProvider language="VAS" implementationClass="com.vasplugin.VASLineMarkerProvider"/>
+    <gotoSymbolContributor implementation="com.vasplugin.VASChooseByNameContributor"/>
+    <lang.psiStructureViewFactory language="VAS" implementationClass="com.vasplugin.VASStructureViewFactory"/>
   </extensions>
 
   <application-components>

@@ -1,17 +1,22 @@
 package com.vasplugin.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.JavaTokenType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.tree.IElementType;
+import com.vasplugin.VASIcons;
 import com.vasplugin.psi.*;
 import com.vasplugin.psi.VASEntity;
 import com.vasplugin.psi.VASMacroImpl;
 import com.vasplugin.psi.VASMacros;
 import com.vasplugin.psi.VASTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class VASPsiImplUtil {
     public static String getName(VASMacroImpl element) {
@@ -123,5 +128,49 @@ public class VASPsiImplUtil {
             }
         }
         return null;
+    }
+
+    public static ItemPresentation getPresentation(final VASEntity element) {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return element.getName();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return element.getContainingFile() != null ? element.getContainingFile().getName() : null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return VASIcons.FILE;
+            }
+        };
+    }
+
+    public static ItemPresentation getPresentation(final VASMacroImpl element) {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return element.getName();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return element.getContainingFile().getName();
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return VASIcons.MACRO;
+            }
+        };
     }
 }
