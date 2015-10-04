@@ -161,7 +161,7 @@ public class VASParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF | B_VALUES values? E_VALUES
+  // entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF | values
   static boolean item_(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "item_")) return false;
     boolean r;
@@ -172,28 +172,9 @@ public class VASParser implements PsiParser, LightPsiParser {
     if (!r) r = MACROS(b, l + 1);
     if (!r) r = consumeToken(b, COMMENT);
     if (!r) r = consumeToken(b, CRLF);
-    if (!r) r = item__6(b, l + 1);
+    if (!r) r = values(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  // B_VALUES values? E_VALUES
-  private static boolean item__6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "item__6")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, B_VALUES);
-    r = r && item__6_1(b, l + 1);
-    r = r && consumeToken(b, E_VALUES);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // values?
-  private static boolean item__6_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "item__6_1")) return false;
-    values(b, l + 1);
-    return true;
   }
 
   /* ********************************************************** */
@@ -298,18 +279,18 @@ public class VASParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ((SIMPLE_VALUE|entity|key_value_pair|MACROS) SEPARATOR values) | (SIMPLE_VALUE|entity|key_value_pair|MACROS)
+  // ((SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES)) SEPARATOR values) | (SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES))
   public static boolean values(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "values")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<values>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, "<values>");
     r = values_0(b, l + 1);
     if (!r) r = values_1(b, l + 1);
     exit_section_(b, l, m, VALUES, r, false, null);
     return r;
   }
 
-  // (SIMPLE_VALUE|entity|key_value_pair|MACROS) SEPARATOR values
+  // (SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES)) SEPARATOR values
   private static boolean values_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "values_0")) return false;
     boolean r;
@@ -321,7 +302,7 @@ public class VASParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // SIMPLE_VALUE|entity|key_value_pair|MACROS
+  // SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES)
   private static boolean values_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "values_0_0")) return false;
     boolean r;
@@ -330,11 +311,31 @@ public class VASParser implements PsiParser, LightPsiParser {
     if (!r) r = entity(b, l + 1);
     if (!r) r = key_value_pair(b, l + 1);
     if (!r) r = MACROS(b, l + 1);
+    if (!r) r = values_0_0_4(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // SIMPLE_VALUE|entity|key_value_pair|MACROS
+  // B_VALUES values? E_VALUES
+  private static boolean values_0_0_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "values_0_0_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, B_VALUES);
+    r = r && values_0_0_4_1(b, l + 1);
+    r = r && consumeToken(b, E_VALUES);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // values?
+  private static boolean values_0_0_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "values_0_0_4_1")) return false;
+    values(b, l + 1);
+    return true;
+  }
+
+  // SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES)
   private static boolean values_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "values_1")) return false;
     boolean r;
@@ -343,8 +344,28 @@ public class VASParser implements PsiParser, LightPsiParser {
     if (!r) r = entity(b, l + 1);
     if (!r) r = key_value_pair(b, l + 1);
     if (!r) r = MACROS(b, l + 1);
+    if (!r) r = values_1_4(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // B_VALUES values? E_VALUES
+  private static boolean values_1_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "values_1_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, B_VALUES);
+    r = r && values_1_4_1(b, l + 1);
+    r = r && consumeToken(b, E_VALUES);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // values?
+  private static boolean values_1_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "values_1_4_1")) return false;
+    values(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

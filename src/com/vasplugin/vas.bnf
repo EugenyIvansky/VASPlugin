@@ -17,7 +17,7 @@
 
 vasFile ::= item_*
 
-private item_ ::= (entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF | B_VALUES values? E_VALUES)
+private item_ ::= (entity | MACRO_IMPORT | MACRO_IMPL | MACROS | COMMENT | CRLF | values)
 
 MACRO_IMPL ::= (MACRO_IMPL_START MACRO_BRACKET_START MACRO_NAME MACRO_PARAMS? MACRO_BRACKET_END values? MACRO_IMPL_END) {mixin="com.vasplugin.psi.impl.VASNamedElementImpl"
                                                                                                                          implements="com.vasplugin.psi.VASNamedElement" methods=[getName setName getNameIdentifier getPresentation]}
@@ -27,7 +27,7 @@ entity ::= (B_ENTITY key_value_pair_list? E_ENTITY){mixin="com.vasplugin.psi.imp
 key_value_pair_list ::= (key_value_pair SEPARATOR key_value_pair_list) | (key_value_pair)
 key_value_pair ::= (KEY  KV_SEPARATOR (SIMPLE_VALUE|entity)) | (KEY KV_SEPARATOR B_VALUES values? E_VALUES) | (KEY) | (MACROS) {mixin="com.vasplugin.psi.impl.VASContributedReferenceHostImpl"
                                                                                                                                 implements="com.vasplugin.psi.VASContributedReferenceHost"}
-values ::= ((SIMPLE_VALUE|entity|key_value_pair|MACROS) SEPARATOR values) | (SIMPLE_VALUE|entity|key_value_pair|MACROS)
+values ::=  ((SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES)) SEPARATOR values) | (SIMPLE_VALUE|entity|key_value_pair|MACROS|(B_VALUES values? E_VALUES))
 MACROS ::= (MACRO_CALL MACRO_CALL_PARAMS?) {mixin="com.vasplugin.psi.impl.VASContributedReferenceHostImpl"
                                             implements="com.vasplugin.psi.VASContributedReferenceHost" methods=[getName]}
 

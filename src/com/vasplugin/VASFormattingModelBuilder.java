@@ -22,8 +22,8 @@ public class VASFormattingModelBuilder implements FormattingModelBuilder {
     private static SpacingBuilder createSpaceBuilder(CodeStyleSettings settings) {
         return new SpacingBuilder(settings, VASLanguage.INSTANCE).
                 before(VASTypes.ENTITY).lineBreakInCodeIf(true).
-                after(VASTypes.B_VALUES).lineBreakInCodeIf(true).
-                before(VASTypes.E_VALUES).lineBreakInCodeIf(true).
+//                after(VASTypes.B_VALUES).lineBreakInCodeIf(true).
+//                before(VASTypes.E_VALUES).lineBreakInCodeIf(true).
                 after(VASTypes.SEPARATOR).spaceIf(settings.SPACE_AFTER_COMMA).
                 before(VASTypes.SEPARATOR).spaceIf(settings.SPACE_BEFORE_COMMA).
                 after(VASTypes.KV_SEPARATOR).spaceIf(settings.SPACE_AFTER_SEMICOLON).

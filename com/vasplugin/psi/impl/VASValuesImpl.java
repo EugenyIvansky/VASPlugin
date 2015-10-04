@@ -47,9 +47,9 @@ public class VASValuesImpl extends ASTWrapperPsiElement implements VASValues {
   }
 
   @Override
-  @Nullable
-  public VASValues getValues() {
-    return findChildByClass(VASValues.class);
+  @NotNull
+  public List<VASValues> getValuesList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, VASValues.class);
   }
 
 }

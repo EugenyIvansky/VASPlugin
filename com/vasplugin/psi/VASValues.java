@@ -19,7 +19,7 @@ public interface VASValues extends PsiElement {
   @Nullable
   VASKeyValuePair getKeyValuePair();
 
-  @Nullable
-  VASValues getValues();
+  @NotNull
+  List<VASValues> getValuesList();
 
 }

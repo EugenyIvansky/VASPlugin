@@ -41,7 +41,7 @@ public class VASReferenceContributor extends PsiReferenceContributor {
                             ASTNode key = kvPair.getNode().findChildByType(VASTypes.KEY);
                             if (key != null) {
                                 String keyName = key.getText().substring(1, key.getText().length() - 1);
-                                if (keyName.equals("baseRef") || keyName.equals("inputRef") || keyName.equals("name")) {
+                                if (keyName.equals("baseRef") || keyName.equals("ref") || keyName.equals("inputRef") || keyName.equals("name")) {
                                     String valueName = value.getText().substring(1, value.getText().length() - 1);
                                     return new PsiReference[]{new VASEntityReference(value, valueName, new TextRange(1, valueName.length() + 1))};
                                 }
