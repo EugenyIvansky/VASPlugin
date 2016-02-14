@@ -4,18 +4,25 @@ import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.formatter.common.AbstractBlock;
+import com.intellij.psi.tree.IElementType;
 import com.vasplugin.psi.VASTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static com.intellij.psi.TokenType.*;
+import static com.vasplugin.psi.VASTypes.*;
 
 public class VASBlock extends AbstractBlock {
     private SpacingBuilder spacingBuilder;
 
+    private Set<IElementType> typesForParentBlockForNormalIndent = new HashSet<IElementType>(Arrays.asList(ENTITY, KEY_VALUE_PAIR_LIST, VALUES));
+    private Set<IElementType> typesForChildrenBlocksForNormalIndent = new HashSet<IElementType>(Arrays.asList(KEY_VALUE_PAIR, COMMENT, ENTITY));
+
+
     protected VASBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment,
-                          SpacingBuilder spacingBuilder) {
+                       SpacingBuilder spacingBuilder) {
         super(node, wrap, alignment);
         this.spacingBuilder = spacingBuilder;
     }
@@ -31,16 +38,11 @@ public class VASBlock extends AbstractBlock {
         ASTNode child = node.getFirstChildNode();
         ASTNode previousChild = null;
         while (child != null) {
-            if (child.getElementType() != TokenType.WHITE_SPACE &&
-                    (previousChild == null || previousChild.getElementType() != VASTypes.CRLF ||
-                            child.getElementType() != VASTypes.CRLF)) {
-
-                if(child.getElementType() == VASTypes.KEY_VALUE_PAIR_LIST){
+            if (child.getElementType() != WHITE_SPACE && notSequenceOfCRLF(child, previousChild)) {
+                if (child.getElementType() == KEY_VALUE_PAIR_LIST) {
                     buildChildren(blocks, child);
                 } else {
-                    Block block = new VASBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(),
-                            spacingBuilder);
-                    blocks.add(block);
+                    blocks.add(new VASBlock(child, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), spacingBuilder));
                 }
             }
 
@@ -49,12 +51,18 @@ public class VASBlock extends AbstractBlock {
         }
     }
 
+    private boolean notSequenceOfCRLF(ASTNode child, ASTNode previousChild) {
+        return previousChild == null || previousChild.getElementType() != CRLF || child.getElementType() != CRLF;
+    }
+
     @Override
     public Indent getIndent() {
-        if(myNode.getTreeParent().getElementType() == VASTypes.ENTITY || myNode.getTreeParent().getElementType() == VASTypes.KEY_VALUE_PAIR_LIST || myNode.getTreeParent().getElementType() == VASTypes.VALUES){
-            if (myNode.getElementType() == VASTypes.KEY_VALUE_PAIR || myNode.getElementType() == VASTypes.COMMENT || myNode.getElementType() == VASTypes.ENTITY) {
-                return Indent.getNormalIndent();
-            }
+        if (myNode.getTreeParent() == null || !typesForParentBlockForNormalIndent.contains(myNode.getTreeParent().getElementType())) {
+            return Indent.getNoneIndent();
+        }
+
+        if (typesForChildrenBlocksForNormalIndent.contains(myNode.getElementType())) {
+            return Indent.getNormalIndent();
         }
 
         return Indent.getNoneIndent();

@@ -47,8 +47,9 @@ VALUE=\"~([^\\]\") | [:digit:]+([,.][:digit:]+)? | '[:letter:]' | [[:digit:][:le
 
 %%
 
-<YYINITIAL> {KEY} { return VASTypes.KEY; }
-<WAITING_VALUE> {VALUE} { yybegin(END_KEY_VALUE_PAIR); return VASTypes.VAS_VALUE; }
+<YYINITIAL> {KEY}                                           { return VASTypes.KEY; }
+<WAITING_VALUE> {VALUE}                                     { yybegin(YYINITIAL); return VASTypes.VAS_VALUE; }
+<WAITING_VALUES> {VALUE}                                    { yybegin(WAITING_VALUES); return VASTypes.VAS_VALUE; }
 
 {MACRO_IMPORT}                                              { return VASTypes.MACRO_IMPORT; }
 
@@ -64,8 +65,9 @@ VALUE=\"~([^\\]\") | [:digit:]+([,.][:digit:]+)? | '[:letter:]' | [[:digit:][:le
 
 {B_ENTITY}                                                  { yybegin(YYINITIAL); return VASTypes.B_ENTITY; }
 {E_ENTITY}                                                  { yybegin(YYINITIAL); return VASTypes.E_ENTITY; }
-{B_VALUES}                                                  { yybegin(YYINITIAL); return VASTypes.B_VALUES; }
+{B_VALUES}                                                  { yybegin(WAITING_VALUES); return VASTypes.B_VALUES; }
 {E_VALUES}                                                  { yybegin(YYINITIAL); return VASTypes.E_VALUES; }
+<WAITING_VALUES> {SEPARATOR}                                { yybegin(WAITING_VALUES); return VASTypes.SEPARATOR; }
 {SEPARATOR}                                                 { yybegin(YYINITIAL); return VASTypes.SEPARATOR; }
 {KV_SEPARATOR}                                              { yybegin(WAITING_VALUE); return VASTypes.KV_SEPARATOR; }
 

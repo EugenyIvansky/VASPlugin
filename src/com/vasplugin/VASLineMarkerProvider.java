@@ -18,16 +18,16 @@ public class VASLineMarkerProvider extends RelatedItemLineMarkerProvider {
         if (element instanceof VASMacros) {
             VASMacros macro = (VASMacros) element;
             String macroName = macro.getName();
-            if (macroName != null) {
-                Project project = element.getProject();
-                final List<VASMacroImpl> macros = VASUtil.findMacros(project, macroName);
-                if (macros.size() > 0) {
-                    NavigationGutterIconBuilder<PsiElement> builder =
-                            NavigationGutterIconBuilder.create(VASIcons.MACRO).
-                                    setTargets(macros).
-                                    setTooltipText("Navigate to a macros");
-                    result.add(builder.createLineMarkerInfo(element));
-                }
+            if (macroName == null) {
+                return;
+            }
+
+            final List<VASMacroImpl> macros = VASUtil.findMacros(element.getProject(), macroName);
+            if (macros.size() > 0) {
+                NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(VASIcons.MACRO)
+                        .setTargets(macros)
+                        .setTooltipText("Navigate to a macros");
+                result.add(builder.createLineMarkerInfo(element));
             }
         }
     }

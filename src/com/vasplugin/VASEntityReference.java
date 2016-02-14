@@ -5,12 +5,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import com.vasplugin.psi.VASEntity;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VASEntityReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
     private String name;
@@ -24,12 +24,11 @@ public class VASEntityReference extends PsiReferenceBase<PsiElement> implements 
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
         Project project = myElement.getProject();
-        final List<VASEntity> entities = VASUtil.findEntity(project, name);
-        List<ResolveResult> results = new ArrayList<ResolveResult>();
-        for (VASEntity entity : entities) {
-            results.add(new PsiElementResolveResult(entity));
-        }
-        return results.toArray(new ResolveResult[results.size()]);
+        List<ResolveResult> resolveResults = VASUtil.findEntity(project, name).stream()
+                .map(entity -> new PsiElementResolveResult(entity))
+                .collect(Collectors.toList());
+
+        return resolveResults.toArray(new ResolveResult[resolveResults.size()]);
     }
 
     @Nullable
@@ -43,16 +42,12 @@ public class VASEntityReference extends PsiReferenceBase<PsiElement> implements 
     @Override
     public Object[] getVariants() {
         Project project = myElement.getProject();
-        List<VASEntity> entities = VASUtil.findEntity(project);
-        List<LookupElement> variants = new ArrayList<LookupElement>();
-        for (final VASEntity entity : entities) {
-            if (entity.getName() != null && entity.getName().length() > 0) {
-                variants.add(LookupElementBuilder.create(entity).
-                                withIcon(VASIcons.FILE).
-                                withTypeText(entity.getContainingFile().getName())
-                );
-            }
-        }
+
+        List<LookupElement> variants = VASUtil.findEntity(project).stream()
+                .filter(entity -> StringUtils.isEmpty(entity.getName()))
+                .map(entity -> LookupElementBuilder.create(entity).withIcon(VASIcons.FILE).withTypeText(entity.getContainingFile().getName()))
+                .collect(Collectors.toList());
+
         return variants.toArray();
     }
 }
